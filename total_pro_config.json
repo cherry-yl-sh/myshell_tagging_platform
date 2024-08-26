@@ -1,0 +1,40 @@
+{
+  "id": "search_url_by_tags",
+  "initial": "home_state",
+  "states": {
+    "home_state": {
+      "inputs": {
+        "url": {
+          "type": "text",
+          "description":"You hope to generate the URL of the label.",
+          "user_input": true
+        }
+      },
+      "tasks": [
+        {
+          "name": "llm_widget_example_task",
+          "module_type": "AnyWidgetModule",
+          "module_config": {
+            "widget_id": "1744214024104448000",
+            "user_prompt": "{{url}}",
+            "system_prompt": "You are a staff member responsible for tagging articles based on their content. When a user provides you with the URL of an article, your task is to parse the article's content and generate a JSON object that contains the URL and an array of relevant tags that summarize the key topics and themes of the article.\n\nThe JSON object should follow this format:\n\n\"url\": The URL provided by the user.\n\"tags\": An array of tags that accurately represent the key concepts, topics, and themes discussed in the article.\nEnsure that the tags are:\n\nSpecific and relevant to the content of the article.\nUseful for search and categorization purposes.\nBroad enough to cover major topics but specific enough to differentiate from other articles.\nThe output should be in a JSON format that can be directly parsed using OpenAPI.\n\nExample Output: {\n  \"url\": \"https://example.com/article\",\n  \"tags\": [\"technology\", \"blockchain\", \"decentralization\", \"cryptocurrency\"]\n}\n",
+            "output_name": "result"
+          }
+        }
+      ],
+      "render": {
+        "text": "{{result}}",
+        "buttons": [
+          {
+            "content":"Generate Again",
+            "description":"",
+            "on_click":"generate"
+          }
+        ]
+      },
+      "transitions": {
+        "generate": "home_state"
+      }
+    }
+  }
+}
