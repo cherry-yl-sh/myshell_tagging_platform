@@ -1,13 +1,47 @@
 {
-  "id": "search_url_by_tags",
-  "initial": "home_state",
+  "id": "tag_url_system",
+  "initial": "home_page_state",
+  "context": {
+    "articles": "",
+    "article_split": ";"
+  },
   "states": {
-    "home_state": {
+    "home_page_state": {
       "inputs": {
-        "url": {
+      },
+      "render": {
+        "text": "Welcome to Airtable Search System! You can search articles by your input. And upload article url ",
+        "buttons": [
+          {
+            "content": "Search Airtable",
+            "description": "Search articles by your input",
+            "on_click": "search_state"
+          },
+          {
+            "content": "Upload Airtable",
+            "description": "Upload article url to Airtable",
+            "on_click": "upload_airtable_state"
+          },
+          {
+            "content": "List Airtable",
+            "description": "List All Articles in context",
+            "on_click": "list_airtable_state"
+          }
+        ]
+      },
+      "transitions": {
+        "search_state": "search_result_state_page",
+        "upload_airtable_state": "upload_airtable_state_page",
+        "list_airtable_state": "list_airtable_state_page"
+      }
+    },
+    "search_result_state_page": {
+      "inputs": {
+        "search_input": {
           "type": "text",
-          "description":"You hope to generate the URL of the label.",
-          "user_input": true
+          "label": "Search Input",
+          "user_input": true,
+          "description": "Please input your search keyword To Search Relative Articles"
         }
       },
       "tasks": [
@@ -16,24 +50,83 @@
           "module_type": "AnyWidgetModule",
           "module_config": {
             "widget_id": "1744214024104448000",
-            "user_prompt": "{{url}}",
-            "system_prompt": "You are a staff member responsible for tagging articles based on their content. When a user provides you with the URL of an article, your task is to parse the article's content and generate a JSON object that contains the URL and an array of relevant tags that summarize the key topics and themes of the article.\n\nThe JSON object should follow this format:\n\n\"url\": The URL provided by the user.\n\"tags\": An array of tags that accurately represent the key concepts, topics, and themes discussed in the article.\nEnsure that the tags are:\n\nSpecific and relevant to the content of the article.\nUseful for search and categorization purposes.\nBroad enough to cover major topics but specific enough to differentiate from other articles.\nThe output should be in a JSON format that can be directly parsed using OpenAPI.\n\nExample Output: {\n  \"url\": \"https://example.com/article\",\n  \"tags\": [\"technology\", \"blockchain\", \"decentralization\", \"cryptocurrency\"]\n}\n",
-            "output_name": "result"
+            "user_prompt": "{{search_input}}",
+            "system_prompt": "You are an article search engine. Users will input some tags or relevant content, please use the following context(split by ;) as the data source to return the desired result list to users. The structure of the results should include URL and a brief description of the articles.And Tags of articles Here are some resource for search: {{context.articles}} the result only in this resource \ngive the result like this\nTitle: CircleStarks: A New Approach to Blockchain Technology\nURL: https://vitalik.eth.limo/general/2024/07/23/circlestarks.html\nDescription: This article discusses CircleStarks, a new approach to blockchain technology. It explores the concepts of decentralization and cryptocurrency in the context of CircleStarks.\n",
+            "output_name": "search_result"
           }
         }
       ],
+      "outputs": {
+      },
       "render": {
-        "text": "{{result}}",
+        "text": "your search input is {{search_input}}, your search result is \n {{search_result}} ",
         "buttons": [
           {
-            "content":"Generate Again",
-            "description":"",
-            "on_click":"generate"
+            "content": "Go Home",
+            "description": "Go Home Page",
+            "on_click": "go_home"
           }
         ]
       },
       "transitions": {
-        "generate": "home_state"
+        "go_home": "home_page_state"
+      }
+    },
+    "upload_airtable_state_page": {
+      "inputs": {
+        "upload_article_input": {
+          "type": "text",
+          "label": "Upload Article Input",
+          "user_input": true,
+          "description": "Please input your article url To Upload To Airtable, I will store it and generate airtable tag for you"
+        }
+      },
+      "tasks": [
+        {
+          "name": "llm_widget_example_task",
+          "module_type": "AnyWidgetModule",
+          "module_config": {
+            "widget_id": "1744214024104448000",
+            "user_prompt": "{{upload_article_input}}",
+            "system_prompt": "You are a staff member responsible for tagging articles based on their content. When a user provides you with the URL of an article, your task is to parse the article's content and generate a JSON object that contains the URL and an array of relevant tags that summarize the key topics and themes of the article.\n\nThe JSON object should follow this format:\n\n\"url\": The URL provided by the user.\n\"tags\": An array of tags that accurately represent the key concepts, topics, and themes discussed in the article.\nEnsure that the tags are:\n\nSpecific and relevant to the content of the article.\nUseful for search and categorization purposes.\nBroad enough to cover major topics but specific enough to differentiate from other articles.\nThe output should be in a JSON format that can be directly parsed using OpenAPI.\n\nExample Output: {\"url\":\"https://vitalik.eth.limo/general/2024/07/23/circlestarks.html\",\"tags\":[\"technology\",\"blockchain\",\"decentralization\",\"cryptocurrency\",\"CircleStarks\"]}",
+            "output_name": "upload_article_result"
+          }
+        }
+      ],
+      "outputs": {
+        "context.articles": "{{context.articles + context.article_split +  upload_article_result}}"
+      },
+      "render": {
+        "text": "your upload Url is {{upload_article_input}}, the article info is \n [{{upload_article_result}}] ",
+        "buttons": [
+          {
+            "content": "Go Home",
+            "description": "Go Home Page",
+            "on_click": "go_home"
+          }
+        ]
+      },
+      "transitions": {
+        "go_home": "home_page_state"
+      }
+    },
+    "list_airtable_state_page": {
+      "inputs": {
+      },
+      "outputs": {
+      },
+      "render": {
+        "text": "All Airtable Articles are \n [{{context.articles}}]",
+        "buttons": [
+          {
+            "content": "Go Home",
+            "description": "Go Home Page",
+            "on_click": "go_home"
+          }
+        ]
+      },
+      "transitions": {
+        "go_home": "home_page_state"
       }
     }
   }
