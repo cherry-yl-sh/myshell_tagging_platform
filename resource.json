@@ -1,6 +1,27 @@
 [
   {
     "url": "https://vitalik.eth.limo/general/2024/07/23/circlestarks.html",
-    "tags": ["technology", "blockchain", "decentralization", "cryptocurrency", "CircleStarks"]
+    "tags": [
+      "technology",
+      "blockchain",
+      "decentralization",
+      "cryptocurrency",
+      "CircleStarks"
+    ]
+  },
+  {
+    "url": "https://vitalik.eth.limo/general/2023/02/28/ux.html",
+    "tags": [
+      "user experience",
+      "blockchain",
+      "ethereum",
+      "cryptocurrency",
+      "wallets",
+      "transaction fees",
+      "UI design",
+      "decentralization",
+      "privacy",
+      "account abstraction"
+    ]
   }
 ]

@@ -1,0 +1,43 @@
+{
+  "id": "search_url",
+  "initial": "search_page",
+  "context": {
+    "resource": "[{\"url\":\"https://vitalik.eth.limo/general/2024/07/23/circlestarks.html\",\"tags\":[\"technology\",\"blockchain\",\"decentralization\",\"cryptocurrency\",\"CircleStarks\"]},{\"url\":\"https://vitalik.eth.limo/general/2023/02/28/ux.html\",\"tags\":[\"user experience\",\"blockchain\",\"ethereum\",\"cryptocurrency\",\"wallets\",\"transaction fees\",\"UI design\",\"decentralization\",\"privacy\",\"account abstraction\"]}]"
+  },
+  "states": {
+    "search_page": {
+      "inputs": {
+        "search_input": {
+          "type": "text",
+          "description":"input the tag or content you wanna search",
+          "user_input": true
+        }
+      },
+      "tasks": [
+        {
+          "name": "llm_widget_example_task",
+          "module_type": "AnyWidgetModule",
+          "module_config": {
+            "widget_id": "1744214024104448000",
+            "user_prompt": "{{search_input}}",
+            "system_prompt": "You are an article search engine. Users will input some tags or relevant content, please use the following JSON file as the data source to return the desired result list to users. The structure of the results should include URL and a brief description of the articles.And Tags of articles Here are some resource for search: {{context.resource}} \ngive the result like this\nTitle: CircleStarks: A New Approach to Blockchain Technology\nURL: https://vitalik.eth.limo/general/2024/07/23/circlestarks.html\nDescription: This article discusses CircleStarks, a new approach to blockchain technology. It explores the concepts of decentralization and cryptocurrency in the context of CircleStarks.\n",
+            "output_name": "result"
+          }
+        }
+      ],
+      "render": {
+        "text": "{{result}}",
+        "buttons": [
+          {
+            "content":"Generate Again",
+            "description":"",
+            "on_click":"generate"
+          }
+        ]
+      },
+      "transitions": {
+        "generate": "search_page"
+      }
+    }
+  }
+}
